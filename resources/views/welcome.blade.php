@@ -8,9 +8,9 @@
     <link rel="icon" href="/barzegar.ico">
     <title>frontend</title>
     <script defer="defer" src="/js/chunk-vendors.af5dea6b.js"></script>
-    <script defer="defer" src="/js/app.4647698e.js"></script>
+    <script defer="defer" src="/js/app.85464381.js"></script>
     <link href="/css/chunk-vendors.6e623913.css" rel="stylesheet">
-    <link href="/css/app.f3b0ce30.css" rel="stylesheet">
+    <link href="/css/app.579926b2.css" rel="stylesheet">
 </head>
 
 <body dir="rtl" class="light"><noscript><strong>We're sorry but frontend doesn't work properly without JavaScript
