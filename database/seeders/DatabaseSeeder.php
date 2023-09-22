@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ])->assignRole('Super Admin');
 
-        $this->call(CategorySeeder::class);
-        $this->call(StoreSeeder::class);
+        // $this->call(CategorySeeder::class);
+        // $this->call(StoreSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
