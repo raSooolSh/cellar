@@ -8,13 +8,13 @@
     <link rel="icon" href="/barzegar.ico">
     <title>frontend</title>
     <script defer="defer" src="/js/chunk-vendors.387aa49e.js"></script>
-    <script defer="defer" src="/js/app.4de15352.js"></script>
+    <script defer="defer" src="/js/app.553e3d2e.js"></script>
     <link href="/css/chunk-vendors.6e623913.css" rel="stylesheet">
-    <link href="/css/app.579926b2.css" rel="stylesheet">
+    <link href="/css/app.125efcbf.css" rel="stylesheet">
 </head>
 
-<body dir="rtl" class="light"><noscript><strong>We're sorry but frontend doesn't work properly without JavaScript
-            enabled. Please enable it to continue.</strong></noscript>
+<body dir="rtl"><noscript><strong>We're sorry but frontend doesn't work properly without JavaScript enabled. Please
+            enable it to continue.</strong></noscript>
     <div id="app"></div>
 </body>
 
