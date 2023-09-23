@@ -32,7 +32,7 @@ class CategoriesController extends ApiController
     {
         $request->validate([
             'name' => ['required', 'unique:categories'],
-            'image' => ['required', 'image', 'mimes:png,jpg', 'max:1024'],
+            'image' => ['required', 'image', 'mimes:png,jpg', 'max:5120'],
         ]);
 
         $fileName = uniqid($request->name . '-') . '.' . $request->file('image')->getClientOriginalExtension();
@@ -60,7 +60,7 @@ class CategoriesController extends ApiController
     {
         $request->validate([
             'name' => ['required', Rule::unique('categories')->ignore($category->id)],
-            'image' => ['image', 'mimes:png,jpg', 'max:1024'],
+            'image' => ['image', 'mimes:png,jpg', 'max:5120'],
         ]);
 
         $category->name = $request->name;
