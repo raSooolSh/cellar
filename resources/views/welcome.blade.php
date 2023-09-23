@@ -8,7 +8,7 @@
     <link rel="icon" href="/barzegar.ico">
     <title>frontend</title>
     <script defer="defer" src="/js/chunk-vendors.387aa49e.js"></script>
-    <script defer="defer" src="/js/app.19771a09.js"></script>
+    <script defer="defer" src="/js/app.55ca0557.js"></script>
     <link href="/css/chunk-vendors.6e623913.css" rel="stylesheet">
     <link href="/css/app.125efcbf.css" rel="stylesheet">
 </head>
