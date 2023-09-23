@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="icon" href="/barzegar.ico">
     <title>frontend</title>
-    <script defer="defer" src="/js/chunk-vendors.af5dea6b.js"></script>
-    <script defer="defer" src="/js/app.7da3cea4.js"></script>
+    <script defer="defer" src="/js/chunk-vendors.387aa49e.js"></script>
+    <script defer="defer" src="/js/app.4de15352.js"></script>
     <link href="/css/chunk-vendors.6e623913.css" rel="stylesheet">
     <link href="/css/app.579926b2.css" rel="stylesheet">
 </head>
