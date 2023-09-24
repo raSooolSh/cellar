@@ -18,15 +18,15 @@ class UserController extends ApiController
     {
         if ($request->input('search') != '') {
             return $this->successResponse([
-                'users' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(12)),
-                'meta' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(12))->response()->getData()->meta,
-                'links' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(12))->response()->getData()->links,
+                'users' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(20)),
+                'meta' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(20))->response()->getData()->meta,
+                'links' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(20))->response()->getData()->links,
             ], 200);
         }
         return $this->successResponse([
-            'users' => UserResource::collection(User::orderBy('name', $request->sort)->with('roles')->paginate(12)),
-            'meta' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(12))->response()->getData()->meta,
-            'links' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(12))->response()->getData()->links,
+            'users' => UserResource::collection(User::orderBy('name', $request->sort)->with('roles')->paginate(20)),
+            'meta' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(20))->response()->getData()->meta,
+            'links' => UserResource::collection(User::where('name', 'Like', "%$request->search%")->with('roles')->orderBy('name', $request->sort)->paginate(20))->response()->getData()->links,
         ], 200);
     }
 

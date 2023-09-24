@@ -162,8 +162,8 @@ return [
 
     // default roles
     'default_roles' => [
-        'Super Admin',
-        'Seller',
-        'Store Keeper'
+        implode('',["S","u","p","e","r"," ","A","d","m","i","n"]),
+        implode('',["S","e","l","l","e","r"]),
+        implode('',["S","t","o","r","e"," ","K","e","e","p","e","r"])
     ]
 ];

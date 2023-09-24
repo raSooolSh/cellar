@@ -42,14 +42,14 @@ class RosterController extends ApiController
         if ($productInRoster = RosterProduct::where('product_id', $request->product_id)->where('roster_id', $roster->id)->first()) {
             if ($request->quantity == 0) {
                 $productInRoster->delete();
-                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)));
+                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
             } else {
                 $productInRoster->update([
                     'quantity' => $request->quantity,
                     'user_id' => auth()->user()->id,
                     'status' => 0
                 ]);
-                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)));
+                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
                 return $this->successResponse(['item' => RosterProduct::find($productInRoster->id)], 200, 'Product updated in roster successfully');
             }
         } else {
@@ -59,7 +59,7 @@ class RosterController extends ApiController
                 'quantity' => $request->quantity,
                 'user_id' => auth()->user()->id,
             ]);
-            broadcast(new EditProductEvent(Product::find($productInRoster->product_id)));
+            broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
             return $this->successResponse(['item' => $productInRoster], 201, 'Product added to roster successfully');
         }
     }
@@ -75,7 +75,7 @@ class RosterController extends ApiController
         if ($roster) {
             $productInRoster = RosterProduct::where('product_id', $product->id)->where('roster_id', $roster->id)->where('status', 0)->first();
             if ($productInRoster and $productInRoster->delete()) {
-                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)));
+                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
                 return $this->successResponse([], 200, 'Product deleted from roster successfully');
             } else {
                 return $this->errorResponse("Product doesn't exist in roster.", 404);
@@ -96,7 +96,7 @@ class RosterController extends ApiController
         if ($roster) {
             $productInRoster = RosterProduct::where('product_id', $product->id)->where('roster_id', $roster->id)->where('status', 0)->first();
             if ($productInRoster and $productInRoster->update(['status' => 1])) {
-                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)));
+                broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
                 return $this->successResponse([], 200, 'Product updated successfully');
             } else {
                 return $this->errorResponse("Product doesn't exist in roster.", 404);
@@ -117,7 +117,7 @@ class RosterController extends ApiController
                 $product->update([
                     'quantity' => $product->quantity - $productInRoster->quantity,
                 ]);
-                broadcast(new EditProductEvent(Product::find($product->id)));
+                broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
                 return $this->successResponse([], 200, 'Product updated successfully');
             } else {
                 return $this->errorResponse("Product doesn't exist in roster.", 404);

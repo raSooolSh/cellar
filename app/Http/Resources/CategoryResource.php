@@ -17,7 +17,7 @@ class CategoryResource extends JsonResource
         return [
             'id'=>$this->id,
             'name'=>$this->name,
-            'image'=>route('categories.image',['path'=>$this->image]),
+            'image'=>$this->image == 'default.jpg' ? route('categories.image',['path'=>$this->image]) : route('categories.image',['path'=>$this->name. '/'.$this->image]),
         ];
     }
 }

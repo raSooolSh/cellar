@@ -67,26 +67,26 @@ Route::prefix('/v1')->group(function () {
         // categories
         Route::prefix('/categories')->name('categories.')->group(function () {
             Route::get('/', [AdminCategoriesController::class, 'index'])->name('index');
-            Route::post('/create', [AdminCategoriesController::class, 'store'])->name('store')->middleware('role:Super Admin|Store keeper');
-            Route::patch('/{category}', [AdminCategoriesController::class, 'update'])->name('update')->middleware('role:Super Admin|Store keeper');
-            Route::delete('/{category}', [AdminCategoriesController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store keeper');
+            Route::post('/create', [AdminCategoriesController::class, 'store'])->name('store')->middleware('role:Super Admin|Store Keeper');
+            Route::patch('/{category}', [AdminCategoriesController::class, 'update'])->name('update')->middleware('role:Super Admin|Store Keeper');
+            Route::delete('/{category}', [AdminCategoriesController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store Keeper');
         });
 
         // stores
         Route::prefix('/stores')->name('stores.')->group(function () {
             Route::get('/', [StoreController::class, 'index'])->name('index');
-            Route::post('/create', [StoreController::class, 'store'])->name('store')->middleware('role:Super Admin|Store keeper');
-            Route::patch('/{store}', [StoreController::class, 'update'])->name('update')->middleware('role:Super Admin|Store keeper');
-            Route::delete('/{store}', [StoreController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store keeper');
+            Route::post('/create', [StoreController::class, 'store'])->name('store')->middleware('role:Super Admin|Store Keeper');
+            Route::patch('/{store}', [StoreController::class, 'update'])->name('update')->middleware('role:Super Admin|Store Keeper');
+            Route::delete('/{store}', [StoreController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store Keeper');
         });
 
         // products
         Route::prefix('/products')->name('products.')->group(function () {
-            Route::get('/', [AdminProductController::class, 'index'])->name('index')->middleware('role:Super Admin|Store keeper');
-            Route::post('/create', [AdminProductController::class, 'store'])->name('store')->middleware('role:Super Admin|Store keeper');
-            Route::get('/{product}', [AdminProductController::class, 'edit'])->name('edit')->middleware('role:Super Admin|Store keeper');
-            Route::patch('/{product}', [AdminProductController::class, 'update'])->name('update')->middleware('role:Super Admin|Store keeper');
-            Route::delete('/{product}', [AdminProductController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store keeper');
+            Route::get('/', [AdminProductController::class, 'index'])->name('index')->middleware('role:Super Admin|Store Keeper');
+            Route::post('/create', [AdminProductController::class, 'store'])->name('store')->middleware('role:Super Admin|Store Keeper');
+            Route::get('/{product}', [AdminProductController::class, 'edit'])->name('edit')->middleware('role:Super Admin|Store Keeper');
+            Route::patch('/{product}', [AdminProductController::class, 'update'])->name('update')->middleware('role:Super Admin|Store Keeper');
+            Route::delete('/{product}', [AdminProductController::class, 'destroy'])->name('destroy')->middleware('role:Super Admin|Store Keeper');
         });
     });
 });

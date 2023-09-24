@@ -18,10 +18,9 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('products',function($user){
-    return $user;
-});
-
-Broadcast::channel('products-in-roster',function($user){
-    return $user;
+    return [
+        'id'=>$user->id,
+        'name'=>$user->name,
+    ];
 });
 

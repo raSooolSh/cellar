@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('roster_product', function (Blueprint $table) {
             $table->id();
             $table->foreignId('roster_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->integer('quantity')->default(1);
             $table->boolean('status')->default(0);
             $table->timestamps();

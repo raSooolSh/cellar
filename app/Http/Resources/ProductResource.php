@@ -20,7 +20,7 @@ class ProductResource extends JsonResource
             'barcode'=>$this->barcode,
             'carton_contains'=>$this->carton_contains,
             'quantity'=>$this->quantity,
-            'image'=>route('products.image',['path'=>$this->name.'/'.$this->image]),
+            'image'=>$this->image == 'default.jpg' ? route('products.image',['path'=>$this->image]) : route('products.image',['path'=>$this->name.'/'.$this->image]),
             'store'=>$this->whenLoaded('store'),
             'category'=>$this->whenLoaded('category'),
             'rosters'=>$this->whenLoaded('rosters'),

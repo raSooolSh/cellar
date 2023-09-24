@@ -58,9 +58,9 @@ class ProductController extends ApiController
 
 
         return $this->successResponse([
-            'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(12)),
-            'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(12))->response()->getData()->meta,
-            'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(12))->response()->getData()->links,
+            'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(20)),
+            'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
+            'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
         ], 200);
     }
 
@@ -74,12 +74,13 @@ class ProductController extends ApiController
             'store' => ['required', 'integer', 'exists:stores,id'],
             'carton_contains' => ['required', 'integer', 'min:1'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'image' => ['required', 'image', 'mimes:png,jpg', 'max:2048'],
+            'image' => ['image', 'mimes:png,jpg', 'max:4096'],
         ]);
-
-        $fileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-        $request->file('image')->storeAs('/products/' . "$request->name/", $fileName, 'public');
-
+        if ($request->has('image')) {
+            $fileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('/products/' . "$request->name/", $fileName, 'public');
+        }
+    
         $product = Product::create([
             'name' => $request->name,
             'barcode' => $request->barcode,
@@ -87,10 +88,10 @@ class ProductController extends ApiController
             'store_id' => $request->store,
             'carton_contains' => $request->carton_contains,
             'quantity' => $request->quantity,
-            'image' => $fileName
+            'image' => $request->has('image') ? $fileName :'default.jpg'
         ]);
 
-        return $this->successResponse(['product' => $product], 201, 'Product created successfully');
+        return $this->successResponse(['product' => new ProductResource($product)], 201, 'Product created successfully');
     }
 
     public function edit(Product $product)
@@ -109,7 +110,7 @@ class ProductController extends ApiController
             'store' => ['required', 'integer', 'exists:stores,id'],
             'carton_contains' => ['required', 'integer', 'min:1'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'image' => ['image', 'mimes:png,jpg', 'max:2048'],
+            'image' => ['image', 'mimes:png,jpg', 'max:4096'],
         ]);
 
 
@@ -138,9 +139,9 @@ class ProductController extends ApiController
             'image' => $request->has('image') ? $fileName : $product->image
         ]);
 
-        broadcast(new EditProductEvent(Product::find($product->id)));
+        broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
 
-        return $this->successResponse($product, 200, 'Product updated successfully');
+        return $this->successResponse(['product'=>new ProductResource(Product::find($product->id)->load(['store','category']))], 200, 'Product updated successfully');
     }
 
     public function destroy(Product $product)
@@ -151,8 +152,8 @@ class ProductController extends ApiController
         }
 
         if ($product->delete()) {
-            broadcast(new DeleteProductEvent($product->id));
-            return $this->successResponse([], 200, 'Product deleted successfully.');
+            broadcast(new DeleteProductEvent($product->id))->toOthers();
+            return $this->successResponse(['product'=>$product], 200, 'Product deleted successfully.');
         }
     }
 }

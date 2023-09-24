@@ -27,7 +27,7 @@ class StoreController extends ApiController
             'name'=>$request->name,
         ]);
 
-        broadcast(new AddNewStoreEvent($store));
+        broadcast(new AddNewStoreEvent($store))->toOthers();
         return $this->successResponse(['store' => $store], 201,'Store created successfully.');
     }
 
@@ -40,14 +40,14 @@ class StoreController extends ApiController
             'name'=>$request->name,
         ]);
 
-        broadcast(new EditStoreEvent(Store::find($store->id)));
+        broadcast(new EditStoreEvent(Store::find($store->id)))->toOthers();
         return $this->successResponse(['store' => Store::find($store->id)], 200,'Store updated successfully.');
     }
 
     public function destroy(Store $store)
     {
         if ($store->delete()) {
-            broadcast(new DeleteStoreEvent($store->id));
+            broadcast(new DeleteStoreEvent($store->id))->toOthers();
             return $this->successResponse([], 200);
         };
     }
