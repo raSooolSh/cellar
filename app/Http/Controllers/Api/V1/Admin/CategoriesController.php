@@ -76,7 +76,7 @@ class CategoriesController extends ApiController
             }
             $fileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
             $request->file('image')->storeAs('/categories/' . "$request->name/", $fileName, 'public');
-            $category->image = $request->image;
+            $category->image = $fileName;
         }
 
         if ($request->name != $category->name) {
