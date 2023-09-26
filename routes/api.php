@@ -1,8 +1,12 @@
 <?php
 
+use Pusher\Pusher;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\Api\V1\RosterController;
 use App\Http\Controllers\Api\V1\ProductsController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Admin\RoleController;
@@ -11,9 +15,6 @@ use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\Admin\StoreController;
 use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\V1\Admin\CategoriesController  as AdminCategoriesController;
-use App\Http\Controllers\Api\V1\RosterController;
-use Illuminate\Support\Facades\Broadcast;
-use Pusher\Pusher;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,16 @@ Broadcast::routes(['middleware'=>['auth:sanctum']]);
 Route::get('categories/img', [CategoriesController::class, 'getImage'])->name('categories.image');
 Route::get('products/img', [ProductsController::class, 'getImage'])->name('products.image');
 Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image');
-
+Route::get('/products/rename',function(){
+    $products = Product::all();
+    foreach($products as $product){
+        $brand = mb_substr($product->name,0,mb_strpos($product->name,'-'));
+        $productName = mb_substr($product->name,mb_strpos($product->name,'-')+1);
+        $newName = $productName.'-'.$brand;
+        $product->name = $newName;
+        $product->save();
+    }
+});
 
 Route::prefix('/v1')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
