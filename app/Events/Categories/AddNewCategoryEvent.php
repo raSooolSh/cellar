@@ -14,7 +14,7 @@ use Illuminate\Queue\SerializesModels;
 
 class AddNewCategoryEvent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets;
 
     public $category;
     /**

@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class DeleteProductEvent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets;
 
     public $id;
     /**
