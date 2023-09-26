@@ -40,8 +40,8 @@ Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image'
 Route::get('/products/rename',function(){
     $products = Product::all();
     foreach($products as $product){
-        $brand = mb_substr($product->name,0,mb_strpos($product->name,'-'));
-        $productName = mb_substr($product->name,mb_strpos($product->name,'-')+1);
+        $brand = substr($product->name,0,strpos($product->name,'-'));
+        $productName = substr($product->name,strpos($product->name,'-')+1);
         $newName = $productName.'-'.$brand;
         dd($newName);
         $product->name = $newName;
