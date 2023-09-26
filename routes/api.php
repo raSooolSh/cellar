@@ -1,9 +1,12 @@
 <?php
 
+use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\User;
+use App\Models\Roster;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\RosterProduct;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Api\V1\RosterController;
@@ -37,6 +40,43 @@ Broadcast::routes(['middleware'=>['auth:sanctum']]);
 Route::get('categories/img', [CategoriesController::class, 'getImage'])->name('categories.image');
 Route::get('products/img', [ProductsController::class, 'getImage'])->name('products.image');
 Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image');
+route::get('cronjob/daily',function(Request $request){
+    if($request->password = env('CRON_JOB_PASSWORD')){
+        $rosters = Roster::where('status', '1')->get();
+            $lastRoster = Roster::where('status', '1')->orderBy('id', 'desc')->first();
+            $pendingProducts = RosterProduct::where('status', 0)->where('roster_id', $lastRoster->id)->get();
+
+            foreach ($rosters as $roster) {
+                $roster->status = 0;
+                $roster->save();
+            };
+
+            $newRoster = Roster::create([
+                'status' => 1
+            ]);
+
+            foreach ($pendingProducts as $rosterProduct) {
+                RosterProduct::create([
+                    'product_id' => $rosterProduct->product_id,
+                    'roster_id' => $newRoster->id,
+                    'status' => 0,
+                    'user_id' => $rosterProduct->user_id,
+                    'quantity' => $rosterProduct->quantity,
+                    'created_at' => $rosterProduct->created_at,
+                    'updated_at' => $rosterProduct->updated_at,
+                ]);
+            }
+    }
+});
+
+route::get('cronjob/monthly',function(Request $request){
+    if($request->password = env('CRON_JOB_PASSWORD')){
+        $rosters = Roster::where('created_at', '<', Carbon::now()->subMonths(6))->get();
+            foreach ($rosters as $roster) {
+                $roster->delete();
+            };
+    }
+});
 
 
 Route::prefix('/v1')->group(function () {
