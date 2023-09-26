@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class EditStoreEvent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $store;
     /**

@@ -14,7 +14,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class EditCategoryEvent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $category;
     /**
