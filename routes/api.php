@@ -41,7 +41,7 @@ Route::get('categories/img', [CategoriesController::class, 'getImage'])->name('c
 Route::get('products/img', [ProductsController::class, 'getImage'])->name('products.image');
 Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image');
 route::get('cronjob/daily',function(Request $request){
-    if($request->password = env('CRON_JOB_PASSWORD')){
+    if($request->password = env('CRON_JOB_PASSWORD','password')){
         $rosters = Roster::where('status', '1')->get();
             $lastRoster = Roster::where('status', '1')->orderBy('id', 'desc')->first();
             $pendingProducts = RosterProduct::where('status', 0)->where('roster_id', $lastRoster->id)->get();
@@ -70,7 +70,7 @@ route::get('cronjob/daily',function(Request $request){
 });
 
 route::get('cronjob/monthly',function(Request $request){
-    if($request->password = env('CRON_JOB_PASSWORD')){
+    if($request->password = env('CRON_JOB_PASSWORD','password')){
         $rosters = Roster::where('created_at', '<', Carbon::now()->subMonths(6))->get();
             foreach ($rosters as $roster) {
                 $roster->delete();
