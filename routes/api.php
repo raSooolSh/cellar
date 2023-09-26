@@ -43,6 +43,7 @@ Route::get('/products/rename',function(){
         $brand = mb_substr($product->name,0,mb_strpos($product->name,'-'));
         $productName = mb_substr($product->name,mb_strpos($product->name,'-')+1);
         $newName = $productName.'-'.$brand;
+        dd($newName);
         $product->name = $newName;
         $product->save();
     }
