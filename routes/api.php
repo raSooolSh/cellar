@@ -37,17 +37,7 @@ Broadcast::routes(['middleware'=>['auth:sanctum']]);
 Route::get('categories/img', [CategoriesController::class, 'getImage'])->name('categories.image');
 Route::get('products/img', [ProductsController::class, 'getImage'])->name('products.image');
 Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image');
-Route::get('/products/rename',function(){
-    $products = Product::all();
-    foreach($products as $product){
-        $brand = substr($product->name,0,strpos($product->name,'-'));
-        $productName = substr($product->name,strpos($product->name,'-')+1);
-        $newName = $productName.'-'.$brand;
-        dd($newName);
-        $product->name = $newName;
-        $product->save();
-    }
-});
+
 
 Route::prefix('/v1')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
