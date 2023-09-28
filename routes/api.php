@@ -34,47 +34,49 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Broadcast::routes(['middleware'=>['auth:sanctum']]);
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 // images
 Route::get('categories/img', [CategoriesController::class, 'getImage'])->name('categories.image');
 Route::get('products/img', [ProductsController::class, 'getImage'])->name('products.image');
 Route::get('users/img', [AuthController::class, 'getImage'])->name('users.image');
-route::get('cronjob/daily',function(Request $request){
-    if($request->password = env('CRON_JOB_PASSWORD','password')){
+route::get('cronjob/daily', function (Request $request) {
+    if ($request->password = env('CRON_JOB_PASSWORD', 'password')) {
         $rosters = Roster::where('status', '1')->get();
-            $lastRoster = Roster::where('status', '1')->orderBy('id', 'desc')->first();
-            $pendingProducts = RosterProduct::where('status', 0)->where('roster_id', $lastRoster->id)->get();
+        $lastRoster = Roster::where('status', '1')->orderBy('id', 'desc')->first();
+        $pendingProducts = RosterProduct::where('status', 0)->where('roster_id', $lastRoster->id)->get();
 
-            foreach ($rosters as $roster) {
-                $roster->status = 0;
-                $roster->save();
-            };
+        foreach ($rosters as $roster) {
+            $roster->status = 0;
+            $roster->save();
+        };
 
-            $newRoster = Roster::create([
-                'status' => 1
+        $newRoster = Roster::create([
+            'status' => 1
+        ]);
+
+        foreach ($pendingProducts as $rosterProduct) {
+            RosterProduct::create([
+                'product_id' => $rosterProduct->product_id,
+                'roster_id' => $newRoster->id,
+                'status' => 0,
+                'user_id' => $rosterProduct->user_id,
+                'quantity' => $rosterProduct->quantity,
+                'created_at' => $rosterProduct->created_at,
+                'updated_at' => $rosterProduct->updated_at,
             ]);
-
-            foreach ($pendingProducts as $rosterProduct) {
-                RosterProduct::create([
-                    'product_id' => $rosterProduct->product_id,
-                    'roster_id' => $newRoster->id,
-                    'status' => 0,
-                    'user_id' => $rosterProduct->user_id,
-                    'quantity' => $rosterProduct->quantity,
-                    'created_at' => $rosterProduct->created_at,
-                    'updated_at' => $rosterProduct->updated_at,
-                ]);
-            }
+        }
+        return response()->json(['msg' => 'jobs done']);
     }
 });
 
-route::get('cronjob/monthly',function(Request $request){
-    if($request->password = env('CRON_JOB_PASSWORD','password')){
+route::get('cronjob/monthly', function (Request $request) {
+    if ($request->password = env('CRON_JOB_PASSWORD', 'password')) {
         $rosters = Roster::where('created_at', '<', Carbon::now()->subMonths(6))->get();
-            foreach ($rosters as $roster) {
-                $roster->delete();
-            };
+        foreach ($rosters as $roster) {
+            $roster->delete();
+        };
+        return response()->json(['msg' => 'jobs done']);
     }
 });
 
@@ -86,12 +88,12 @@ Route::prefix('/v1')->group(function () {
     Route::get('user', [AuthController::class, 'user'])->name('user.info')->middleware(['auth:sanctum']);
 
     // usually
-    Route::get('/products',[ProductsController::class,'index'])->name('products.index');
-    Route::get('/roster',[RosterController::class,'index'])->name('roster.index');
-    Route::post('/roster',[RosterController::class,'store'])->name('roster.store');
-    Route::post('/roster/set-zero/{product}',[RosterController::class,'setZero'])->name('roster.set-zero');
-    Route::post('/roster/extract/{product}',[RosterController::class,'extract'])->name('roster.extract');
-    Route::post('/roster/extract-all/{product}',[RosterController::class,'extractAll'])->name('roster.extract-all');
+    Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
+    Route::get('/roster', [RosterController::class, 'index'])->name('roster.index');
+    Route::post('/roster', [RosterController::class, 'store'])->name('roster.store');
+    Route::post('/roster/set-zero/{product}', [RosterController::class, 'setZero'])->name('roster.set-zero');
+    Route::post('/roster/extract/{product}', [RosterController::class, 'extract'])->name('roster.extract');
+    Route::post('/roster/extract-all/{product}', [RosterController::class, 'extractAll'])->name('roster.extract-all');
 
 
     // admin
