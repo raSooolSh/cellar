@@ -38,6 +38,7 @@ class ProductsController extends ApiController
         // return $query->first();
         return $this->successResponse([
             'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(20)),
+            'search'=>$request->search,
             'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
             'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
         ], 200);
