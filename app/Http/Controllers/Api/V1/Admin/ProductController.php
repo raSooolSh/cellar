@@ -22,43 +22,43 @@ class ProductController extends ApiController
 
 
         $query = Product::query();
-        $query->join('categories', 'categories.id', '=', 'products.category_id')
-            ->select('products.name', 'products.barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'categories.name as category_name');
-        $query->join('stores', 'stores.id', '=', 'products.store_id')
-            ->select('products.name as name', 'products.barcode as barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'stores.name as store_name');
+        // $query->join('categories', 'categories.id', '=', 'products.category_id')
+        //     ->select('products.name', 'products.barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'categories.name as category_name');
+        //     $query->join('stores', 'stores.id', '=', 'products.store_id')
+        //     ->select('products.name as name', 'products.barcode as barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'stores.name as store_name');
         if ($request->has('search') && $request->search != '') {
             $searchItems = explode(' ', $request->search);
-            foreach ($searchItems as $search) {
-                $query->Where('products.name', 'LIKE', "%$search%");
-            }
-            if (count($searchItems) == 1) {
-                $query->orWhere('products.barcode', 'LIKE', "%$request->search%");
-            }
-        }
-
-        if ($request->sort == 'name') {
-            $query->orderBy('products.name', $request->sortDirection);
-        }
-
-        if ($request->sort == 'store') {
-            $query->orderBy('stores.name', $request->sortDirection)->orderBy('name', 'asc');
-        }
-
-        if ($request->sort == 'category') {
-            $query->orderBy('categories.name', $request->sortDirection)->orderBy('name', 'asc');;
-        }
-
-        if ($request->has('category') && !(empty($request->category) || is_null($request->category))) {
-            $query->where('products.category_id', $request->category);
-        }
-
-        if ($request->has('store') && !(empty($request->store) || is_null($request->store))) {
-            $query->where('products.store_id', $request->store);
+            $query->where(function ($query) use ($searchItems, $request) {
+                foreach ($searchItems as $search) {
+                    $query->where('name', 'LIKE', "%$search%");
+                }
+                if (count($searchItems) == 1) {
+                    $query->orWhere('products.barcode', 'LIKE', "%$request->search%");
+                }
+            });
         }
 
 
+        if ($request->has('category') && (!(empty($request->category) || is_null($request->category)))) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->has('store') && (!(empty($request->store) || is_null($request->store)))) {
+            $query->where('store_id', $request->store);
+        }
+
+        switch ($request->sort) {
+            case 'store':
+                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('store.name', $request->sortDirection)->paginate(20));
+                break;
+            case 'category':
+                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('category.name', $request->sortDirection)->paginate(20));
+                break;
+            default:
+                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('name', $request->sortDirection)->paginate(20));
+        }
         return $this->successResponse([
-            'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(20)),
+            'products' => $products,
             'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
             'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
         ], 200);
@@ -80,7 +80,7 @@ class ProductController extends ApiController
             $fileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
             $request->file('image')->storeAs('/products/' . "$request->name/", $fileName, 'public');
         }
-    
+
         $product = Product::create([
             'name' => $request->name,
             'barcode' => $request->barcode,
@@ -88,7 +88,7 @@ class ProductController extends ApiController
             'store_id' => $request->store,
             'carton_contains' => $request->carton_contains,
             'quantity' => $request->quantity,
-            'image' => $request->has('image') ? $fileName :'default.jpg'
+            'image' => $request->has('image') ? $fileName : 'default.jpg'
         ]);
 
         return $this->successResponse(['product' => new ProductResource($product)], 201, 'Product created successfully');
@@ -141,7 +141,7 @@ class ProductController extends ApiController
 
         broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
 
-        return $this->successResponse(['product'=>new ProductResource(Product::find($product->id)->load(['store','category']))], 200, 'Product updated successfully');
+        return $this->successResponse(['product' => new ProductResource(Product::find($product->id)->load(['store', 'category']))], 200, 'Product updated successfully');
     }
 
     public function destroy(Product $product)
@@ -153,7 +153,7 @@ class ProductController extends ApiController
 
         if ($product->delete()) {
             broadcast(new DeleteProductEvent($product->id))->toOthers();
-            return $this->successResponse(['product'=>$product], 200, 'Product deleted successfully.');
+            return $this->successResponse(['product' => $product], 200, 'Product deleted successfully.');
         }
     }
 }

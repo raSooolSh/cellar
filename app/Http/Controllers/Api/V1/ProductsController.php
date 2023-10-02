@@ -16,29 +16,31 @@ class ProductsController extends ApiController
     public function index(Request $request)
     {
         $query = Product::query();
-        $query->join('categories', 'categories.id', '=', 'products.category_id')
-            ->select('products.name', 'products.barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'categories.name as category_name');
-        
+
         if ($request->has('search') && $request->search != '') {
             $searchItems = explode(' ', $request->search);
-            foreach ($searchItems as $search) {
-                $query->Where('products.name', 'LIKE', "%$search%");
-            }
-            if (count($searchItems) == 1) {
-                $query->orWhere('products.barcode', 'LIKE', "%$request->search%");
-            }
+
+            $query->where(function ($query) use ($searchItems,$request) {
+                foreach ($searchItems as $search) {
+                    $query->where('name', 'LIKE', "%$search%");
+                }
+
+                // search in barcodes
+                if (count($searchItems) == 1 && $searchItems[0] != "") {
+                    $query->orWhere('barcode', 'LIKE', "%$request->search%");
+                }
+            });
         }
 
         if ($request->has('categories') && !(empty($request->categories) || is_null($request->categories))) {
-            $query->whereIn('products.category_id', explode(',',$request->categories));
+            $query->whereIn('category_id', explode(',', $request->categories));
         }
 
-        $query->orderBy('products.updated_at','desc');
+        $query->orderBy('name', 'asc');
 
-        // return $query->first();
         return $this->successResponse([
             'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(20)),
-            'search'=>$request->search,
+            'search' => $request->search,
             'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
             'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
         ], 200);
