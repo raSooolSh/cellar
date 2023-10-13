@@ -2,17 +2,17 @@
 
 namespace App\Events\Products;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use App\Http\Resources\ProductResource;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class AddProductEvent implements ShouldBroadcast
+class EditProductsEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -39,6 +39,6 @@ class AddProductEvent implements ShouldBroadcast
 
     public function broadcastAS()
     {
-        return 'add';
+        return 'edit';
     }
 }

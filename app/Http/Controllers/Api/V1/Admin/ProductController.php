@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Events\Products\AddProductEvent;
-use App\Events\Products\DeleteProductEvent;
-use App\Events\Products\EditProductEvent;
+use App\Events\Products\AddProductsEvent;
+use App\Events\Products\DeleteProductsEvent;
+use App\Events\Products\EditProductsEvent;
 use App\Events\Products\UpdateProductsEvent;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
@@ -53,7 +53,7 @@ class ProductController extends ApiController
         ]);
 
         Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
-        broadcast(new AddProductEvent($product));
+        broadcast(new AddProductsEvent($product));
         return $this->successResponse(['product' => new ProductResource($product)], 201, 'Product created successfully');
     }
 
@@ -104,7 +104,7 @@ class ProductController extends ApiController
 
         Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
 
-        broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
+        broadcast(new EditProductsEvent(Product::find($product->id)))->toOthers();
 
         return $this->successResponse(['product' => new ProductResource(Product::find($product->id)->load(['store', 'category']))], 200, 'Product updated successfully');
     }
@@ -118,7 +118,7 @@ class ProductController extends ApiController
 
         if ($product->delete()) {
             Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
-            broadcast(new DeleteProductEvent($product->id))->toOthers();
+            broadcast(new DeleteProductsEvent($product->id))->toOthers();
             return $this->successResponse(['product' => $product], 200, 'Product deleted successfully.');
         }
     }

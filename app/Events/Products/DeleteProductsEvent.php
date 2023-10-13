@@ -2,27 +2,25 @@
 
 namespace App\Events\Products;
 
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
-class EditProductEvent implements ShouldBroadcast
+class DeleteProductsEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $product;
+    public $id;
     /**
      * Create a new event instance.
      */
-    public function __construct(Product $product)
+    public function __construct($id)
     {
-        $this->product = new ProductResource($product->load(['store','category']));
+        $this->id = $id;
     }
 
     /**
@@ -37,8 +35,8 @@ class EditProductEvent implements ShouldBroadcast
         ];
     }
 
-    public function broadcastAS()
+    public function broadcastAs()
     {
-        return 'edit';
+        return 'delete';
     }
 }
