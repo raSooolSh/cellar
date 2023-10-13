@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Events\Products\AddProductEvent;
 use App\Events\Products\DeleteProductEvent;
 use App\Events\Products\EditProductEvent;
+use App\Events\Products\UpdateProductsEvent;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -17,50 +20,8 @@ class ProductController extends ApiController
 {
     public function index(Request $request)
     {
-        $request->sort ?: $request['sort'] = 'name';
-        $request->sortDirection ?: $request['sortDirection'] = 'asc';
-
-
-        $query = Product::query();
-        // $query->join('categories', 'categories.id', '=', 'products.category_id')
-        //     ->select('products.name', 'products.barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'categories.name as category_name');
-        //     $query->join('stores', 'stores.id', '=', 'products.store_id')
-        //     ->select('products.name as name', 'products.barcode as barcode', 'products.category_id', 'products.carton_contains', 'products.id', 'products.image', 'products.store_id', 'products.quantity', 'stores.name as store_name');
-        if ($request->has('search') && $request->search != '') {
-            $searchItems = explode(' ', $request->search);
-            $query->where(function ($query) use ($searchItems, $request) {
-                foreach ($searchItems as $search) {
-                    $query->where('name', 'LIKE', "%$search%");
-                }
-                if (count($searchItems) == 1) {
-                    $query->orWhere('products.barcode', 'LIKE', "%$request->search%");
-                }
-            });
-        }
-
-
-        if ($request->has('category') && (!(empty($request->category) || is_null($request->category)))) {
-            $query->where('category_id', $request->category);
-        }
-
-        if ($request->has('store') && (!(empty($request->store) || is_null($request->store)))) {
-            $query->where('store_id', $request->store);
-        }
-
-        switch ($request->sort) {
-            case 'store':
-                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('store.name', $request->sortDirection)->paginate(20));
-                break;
-            case 'category':
-                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('category.name', $request->sortDirection)->paginate(20));
-                break;
-            default:
-                $products =  ProductResource::collection($query->with(['store', 'category'])->orderBy('name', $request->sortDirection)->paginate(20));
-        }
         return $this->successResponse([
-            'products' => $products,
-            'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
-            'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
+            'products' => Cache::get('products'),
         ], 200);
     }
 
@@ -91,6 +52,8 @@ class ProductController extends ApiController
             'image' => $request->has('image') ? $fileName : 'default.jpg'
         ]);
 
+        Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
+        broadcast(new AddProductEvent($product));
         return $this->successResponse(['product' => new ProductResource($product)], 201, 'Product created successfully');
     }
 
@@ -139,6 +102,8 @@ class ProductController extends ApiController
             'image' => $request->has('image') ? $fileName : $product->image
         ]);
 
+        Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
+
         broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
 
         return $this->successResponse(['product' => new ProductResource(Product::find($product->id)->load(['store', 'category']))], 200, 'Product updated successfully');
@@ -152,6 +117,7 @@ class ProductController extends ApiController
         }
 
         if ($product->delete()) {
+            Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
             broadcast(new DeleteProductEvent($product->id))->toOthers();
             return $this->successResponse(['product' => $product], 200, 'Product deleted successfully.');
         }

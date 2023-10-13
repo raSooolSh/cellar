@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\ApiController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\Facades\Image;
+use App\Http\Controllers\ApiController;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -15,34 +16,8 @@ class ProductsController extends ApiController
 {
     public function index(Request $request)
     {
-        $query = Product::query();
-
-        if ($request->has('search') && $request->search != '') {
-            $searchItems = explode(' ', $request->search);
-
-            $query->where(function ($query) use ($searchItems,$request) {
-                foreach ($searchItems as $search) {
-                    $query->where('name', 'LIKE', "%$search%");
-                }
-
-                // search in barcodes
-                if (count($searchItems) == 1 && $searchItems[0] != "") {
-                    $query->orWhere('barcode', 'LIKE', "%$request->search%");
-                }
-            });
-        }
-
-        if ($request->has('categories') && !(empty($request->categories) || is_null($request->categories))) {
-            $query->whereIn('category_id', explode(',', $request->categories));
-        }
-
-        $query->orderBy('name', 'asc');
-
         return $this->successResponse([
-            'products' => ProductResource::collection($query->with(['store', 'category'])->paginate(20)),
-            'search' => $request->search,
-            'meta' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->meta,
-            'links' => ProductResource::collection($query->with(['store', 'category'])->paginate(20))->response()->getData()->links,
+            'products' => Cache::get('products')
         ], 200);
     }
 

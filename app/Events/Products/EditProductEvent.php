@@ -33,7 +33,7 @@ class EditProductEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('products'),
+            new Channel('products'),
         ];
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Events\Products\EditProductEvent;
 use Carbon\Carbon;
 use App\Models\Roster;
 use App\Models\Product;
@@ -11,8 +10,10 @@ use Morilog\Jalali\Jalalian;
 use App\Models\RosterProduct;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\ApiController;
 use App\Http\Resources\ProductResource;
+use App\Events\Products\EditProductEvent;
 use App\Events\ProductsInRoster\EditProductInRoster;
 use App\Events\ProductsInRoster\AddProductInRosterEvent;
 use App\Events\ProductsInRoster\EditProductInRosterEvent;
@@ -76,6 +77,7 @@ class RosterController extends ApiController
         if ($roster) {
             $productInRoster = RosterProduct::where('product_id', $product->id)->where('roster_id', $roster->id)->where('status', 0)->first();
             if ($productInRoster and $productInRoster->delete()) {
+                Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
                 broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
                 return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id))], 200, 'Product deleted from roster successfully');
             } else {
@@ -97,6 +99,7 @@ class RosterController extends ApiController
         if ($roster) {
             $productInRoster = RosterProduct::where('product_id', $product->id)->where('roster_id', $roster->id)->where('status', 0)->first();
             if ($productInRoster and $productInRoster->update(['status' => 1])) {
+                Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
                 broadcast(new EditProductEvent(Product::find($productInRoster->product_id)))->toOthers();
                 return $this->successResponse(['item' =>new ProductResource(Product::find($productInRoster->product_id)->load(['store','category']))], 200, 'Product updated successfully');
             } else {
@@ -118,6 +121,7 @@ class RosterController extends ApiController
                 $product->update([
                     'quantity' => $product->quantity - $productInRoster->quantity,
                 ]);
+                Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
                 broadcast(new EditProductEvent(Product::find($product->id)))->toOthers();
                 return $this->successResponse(['item' =>new ProductResource(Product::find($product->id)->load(['store','category']))], 200, 'Product updated successfully');
             } else {
