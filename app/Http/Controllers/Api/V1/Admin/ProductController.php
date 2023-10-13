@@ -54,7 +54,7 @@ class ProductController extends ApiController
 
         Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
         broadcast(new AddProductsEvent($product));
-        return $this->successResponse(['product' => new ProductResource($product)], 201, 'Product created successfully');
+        return $this->successResponse(['product' => new ProductResource($product->load(['store', 'category']))], 201, 'Product created successfully');
     }
 
     public function edit(Product $product)
