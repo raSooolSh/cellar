@@ -17,7 +17,7 @@ class ProductsController extends ApiController
     public function index(Request $request)
     {
         return $this->successResponse([
-            'products' => Cache::get('products')
+            'products' => Cache::get('products',[])
         ], 200);
     }
 
