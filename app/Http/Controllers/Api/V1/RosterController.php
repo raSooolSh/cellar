@@ -25,7 +25,7 @@ class RosterController extends ApiController
     {
         $roster = Roster::where('status', 1)->first();
         return $this->successResponse([
-            'products' => $roster ? ProductResource::collection($roster->products()->with(['store', 'category'])->get()) : [],
+            'products' => $roster ? ProductResource::collection($roster->products()->with(['store', 'category'])->orderBy('store.name')->orderBy('category.name')->orderBy('name')->get()) : [],
             'date' => $roster ? Jalalian::fromDateTime($roster->created_at)->format('%A, %d %B %y') : Jalalian::fromCarbon(Carbon::now())->format('%A, %d %B %y')
         ], 200);
     }
