@@ -11,8 +11,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class EditCategoryEvent implements ShouldBroadcast
+class EditCategoryEvent implements ShouldBroadcast,ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
