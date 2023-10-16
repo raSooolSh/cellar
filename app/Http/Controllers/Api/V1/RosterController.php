@@ -44,7 +44,7 @@ class RosterController extends ApiController
             if ($request->quantity == 0) {
                 $productInRoster->delete();
                 broadcast(new EditProductsEvent(Product::find($productInRoster->product_id)));
-                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id))], 200, 'Product deleted from roster successfully');
+                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id)->load(['store','category']))], 200, 'Product deleted from roster successfully');
             } else {
                 $productInRoster->update([
                     'quantity' => $request->quantity,
@@ -52,7 +52,7 @@ class RosterController extends ApiController
                     'status' => 0
                 ]);
                 broadcast(new EditProductsEvent(Product::find($productInRoster->product_id)));
-                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id))], 200, 'Product updated in roster successfully');
+                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id)->load(['store','category']))], 200, 'Product updated in roster successfully');
             }
         } else {
             $productInRoster = RosterProduct::create([
@@ -62,7 +62,7 @@ class RosterController extends ApiController
                 'user_id' => auth()->user()->id,
             ]);
             broadcast(new EditProductsEvent(Product::find($productInRoster->product_id)));
-            return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id))], 201, 'Product added to roster successfully');
+            return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id)->load(['store','category']))], 201, 'Product added to roster successfully');
         }
     }
 
@@ -79,7 +79,7 @@ class RosterController extends ApiController
             if ($productInRoster and $productInRoster->delete()) {
                 Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
                 broadcast(new EditProductsEvent(Product::find($productInRoster->product_id)));
-                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id))], 200, 'Product deleted from roster successfully');
+                return $this->successResponse(['item' => new ProductResource(Product::find($productInRoster->product_id)->load(['store','category']))], 200, 'Product deleted from roster successfully');
             } else {
                 return $this->errorResponse("Product doesn't exist in roster.", 404);
             }

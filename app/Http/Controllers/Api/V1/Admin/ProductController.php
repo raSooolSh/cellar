@@ -119,7 +119,7 @@ class ProductController extends ApiController
         if ($product->delete()) {
             Cache::put('products',ProductResource::collection(Product::query()->with(['store', 'category'])->get()));
             broadcast(new DeleteProductsEvent($product->id))->toOthers();
-            return $this->successResponse(['product' => $product], 200, 'Product deleted successfully.');
+            return $this->successResponse(['product' => $product->load(['store', 'category'])], 200, 'Product deleted successfully.');
         }
     }
 }
