@@ -39,14 +39,15 @@ return [
                 'cluster' => env('PUSHER_APP_CLUSTER', 'ap1'),
                 'host' => '127.0.0.1',
                 'port' => 6001,
+                'encrypted' => true,
                 'scheme' => env('PUSHER_SCHEME', 'https'),
-                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+                // 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
             ],
-            'curl_options' => [
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
+            // 'curl_options' => [
+            //     CURLOPT_SSL_VERIFYHOST => 0,
+            //     CURLOPT_SSL_VERIFYPEER => 0,
+            //     // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+            // ],
         ],
 
         'ably' => [
