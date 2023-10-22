@@ -40,7 +40,7 @@ return [
                 'host' => '127.0.0.1',
                 'port' => 6001,
                 'scheme' => env('PUSHER_SCHEME', 'https'),
-                // 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+                'useTLS' => true,
             ],
             'curl_options' => [
                 CURLOPT_SSL_VERIFYHOST => 0,
