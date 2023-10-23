@@ -116,15 +116,16 @@ return [
          * certificate chain of issuers. The private key also may be contained
          * in a separate file specified by local_pk.
          */
-        'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', '/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.cert'),
+        'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
+        // '/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.cert'
         // '/etc/ssl/virtualmin/1695445185337285/ssl.cert'
 
         /*
          * Path to local private key file on filesystem in case of separate files for
          * certificate (local_cert) and private key.
          */
-        'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', base_path().'/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.key'),
-        // '/etc/ssl/virtualmin/1695445185337285/ssl.key'
+        'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
+        // '/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.key'
 
         /*
          * Passphrase for your local_cert file.
