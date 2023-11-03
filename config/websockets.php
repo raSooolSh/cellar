@@ -117,15 +117,12 @@ return [
          * in a separate file specified by local_pk.
          */
         'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
-        // '/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.cert'
-        // '/etc/ssl/virtualmin/1695445185337285/ssl.cert'
 
         /*
          * Path to local private key file on filesystem in case of separate files for
          * certificate (local_cert) and private key.
          */
         'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
-        // '/home/barzegar-shop/domains/api.barzegar-shop.ir/cellar/ssl/ssl.key'
 
         /*
          * Passphrase for your local_cert file.
@@ -133,8 +130,8 @@ return [
         'passphrase' => env('LARAVEL_WEBSOCKETS_SSL_PASSPHRASE', null),
 
         // for self signed ssl cert
-        'verify_peer'=>false,
-        'verify_peer_name'=>false,
+        // 'verify_peer'=>false,
+        // 'verify_peer_name'=>false,
     ],
 
     /*
