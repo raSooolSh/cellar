@@ -1,4 +1,11 @@
 {
-    "debug": false,
-    "port": 6002
+    "debug": true,
+    "port": 6001,
+    "appManager.array.apps": [
+        {
+            "id": "barzegar",
+            "key": "barzegar",
+            "secret": "barzegar"
+        }
+    ]
 }
