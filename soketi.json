@@ -5,7 +5,8 @@
         {
             "id": "some-id",
             "key": "some-key",
-            "secret": "some-secret"
+            "secret": "some-secret",
+            "webhooks":[]
         }
     ]
 }
