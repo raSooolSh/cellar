@@ -38,16 +38,16 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER', 'ap1'),
                 'encrypted'=>true,
-                'host' => env('PUSHER_HOST','127.0.0.1'),
-                'port' => env('PUSHER_PORT','6001'),
+                // 'host' => env('PUSHER_HOST','127.0.0.1'),
+                // 'port' => env('PUSHER_PORT','6001'),
                 'scheme' => env('PUSHER_SCHEME', 'https'),
                 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
             ],
-            'curl_options' => [
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
+            // 'curl_options' => [
+            //     CURLOPT_SSL_VERIFYHOST => 0,
+            //     CURLOPT_SSL_VERIFYPEER => 0,
+            //     // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+            // ],
         ],
 
         'ably' => [
