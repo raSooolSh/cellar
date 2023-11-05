@@ -36,12 +36,12 @@ return [
             'secret' => env('PUSHER_APP_SECRET','app-secret'),
             'app_id' => env('PUSHER_APP_ID','app-id'),
             'options' => [
-                // 'cluster' => env('PUSHER_APP_CLUSTER', 'ap1'),
-                'host' => env('PUSHER_HOST','127.0.0.1'),
-                'port' => env('PUSHER_PORT','6001'),
-                'scheme' => env('PUSHER_SCHEME', 'http'),
-                'encrypted'=>true,
-                'useTLS' => false,
+                'cluster' => env('PUSHER_APP_CLUSTER', 'ap1'),
+                // 'host' => env('PUSHER_HOST','127.0.0.1'),
+                // 'port' => env('PUSHER_PORT','6001'),
+                // 'scheme' => env('PUSHER_SCHEME', 'http'),
+                // 'encrypted'=>true,
+                'useTLS' => true,
             ],
             // 'curl_options' => [
             //     CURLOPT_SSL_VERIFYHOST => 0,
