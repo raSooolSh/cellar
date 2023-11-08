@@ -1,0 +1,2 @@
+
+        "pusher/pusher-php-server": "^5.0",
